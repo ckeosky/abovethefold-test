@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Demo</title>
+</head>
+
+<body>
+  
+<div id="myAd1">
+  <!-- empty div for ad -->
+</div>
+
+<div id="myAd2">
+  <!-- empty div for ad -->
+</div>
+
+<div id="myAd3">
+  <!-- empty div for ad -->
+</div>
+
+<script>
+  const POSITION = {
+    medium_rectangle: {
+      name: "medium_rectangle",
+      width: 300,
+      height: 250
+    },
+    large_skyscraper: {
+      name: "large_skyscraper",
+      width: 300,
+      height: 600
+    },
+    leaderboard: {
+      name: "leaderboard",
+      width: 728,
+      height: 90
+    },
+  };
+
+  function waitForElm(selector) {
+    return new Promise(resolve => {
+      var elm = document.querySelector(selector);
+      if (elm) {
+        return resolve(elm);
+      }
+
+      const observer = new MutationObserver(mutations => {
+        var elm = document.querySelector(selector);
+        if (elm) {
+          observer.disconnect();
+          resolve(elm);
+        }
+      });
+
+      observer.observe(document.body, {
+        childList: true,
+        subtree: true
+      });
+    });
+  }
+
+  function createIframe(shortname, position, width, height) {
+    var ifrm = document.createElement("iframe");
+    ifrm.setAttribute("src", "https://tempest.services.disqus.com/ads-iframe/google/?position=" + position + "&shortname=" + shortname + "&experiment=nodoublewide&variant=active&service=dynamic&colorScheme=light&sourceUrl=" + encodeURIComponent(window.location.href) + "&typeface=serif&disqus_version=current");
+    ifrm.style.width = width + "px";
+    ifrm.style.height = height + "px";
+    return ifrm;
+  }
+
+  function insertAd(shortname, position, elementSelector, waitForElementPresence) {
+    if (waitForElementPresence) {
+      waitForElm(elementSelector).then((elm) => {
+        elm.appendChild(createIframe(shortname, position.name, position.width, position.height));
+      });
+    } else {
+      var elm = document.querySelector(elementSelector);
+      if (elm) {
+        elm.appendChild(createIframe(shortname, position.name, position.width, position.height));
+      }
+    }
+  }
+</script>
+
+<script>
+  insertAd("abovethefoldtest", POSITION.medium_rectangle, "#myAd1", true); // calling it for add ad to the desired place
+  insertAd("abovethefoldtest", POSITION.large_skyscraper, "#myAd2", true); // calling it for add ad to the desired place
+  insertAd("abovethefoldtest", POSITION.leaderboard, "#myAd3", true); // calling it for add ad to the desired place
+</script>
+
+</body>
+
+</html>
